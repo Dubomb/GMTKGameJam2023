@@ -17,6 +17,7 @@ bool Game::init() {
     success &= textureLibrary.loadTexture("square", "res/square.png");
     success &= textureLibrary.loadTexture("phone", "res/phone.png");
     success &= textureLibrary.loadTexture("background", "res/testbackground.png");
+    success &= textureLibrary.loadTexture("message-bg", "res/message-bg.png");
 
     Level* levelOne = new Level;
     sf::Sprite pic(textureLibrary.getTexture("square"));
@@ -121,6 +122,9 @@ void Game::gameLoop() {
     window.setVisible(true);
     window.setMouseCursorVisible(false);
 
+    sf::RenderWindow popupWindow;
+    popupWindow.setVerticalSyncEnabled(true);
+
     sf::Sprite phone(textureLibrary.getTexture("phone"));
     phone.setScale(windowScale, windowScale);
 
@@ -143,6 +147,14 @@ void Game::gameLoop() {
 
     loadLevel();
 
+    popupWindow.create(sf::VideoMode(48 * windowScale, 32 * windowScale), "New message!", sf::Style::None);
+    popupWindow.setPosition(sf::Vector2i(fixedSize.x * 0.85f - 32 * windowScale / 2, fixedSize.y * 0.5f - 48 * windowScale / 2));
+    popupWindow.clear();
+    sf::RenderTexture* texture = levels[currentLevel]->createPopup();
+    popupWindow.draw(sf::Sprite(texture->getTexture()));
+    popupWindow.display();
+    delete texture;
+
     while (!exit) {
 
         sf::Vector2i currentMousePos = getMousePosition();
@@ -163,10 +175,6 @@ void Game::gameLoop() {
                 if (levels[currentLevel]->captureTarget(view)) {
                     std::cout << "Captured!\n";
                 }
-
-                loadLevel();
-
-                lockedMouse = false;
             }
         }
 
@@ -186,8 +194,22 @@ void Game::gameLoop() {
             view.setCenter(clampedMousePos.x, clampedMousePos.y);
         }
 
-        if (currentLevel == levels.size()) {
-            break;
+        if (lockedMouse) {
+            loadLevel();
+
+            if (currentLevel == levels.size()) {
+                break;
+            }
+
+            popupWindow.create(sf::VideoMode(48 * windowScale, 32 * windowScale), "New message!", sf::Style::None);
+            popupWindow.setPosition(sf::Vector2i(fixedSize.x * 0.85f - 32 * windowScale / 2, fixedSize.y * 0.5f - 48 * windowScale / 2));
+            popupWindow.clear();
+            texture = levels[currentLevel]->createPopup();
+            popupWindow.draw(sf::Sprite(texture->getTexture()));
+            popupWindow.display();
+            delete texture;
+
+            lockedMouse = false;
         }
 
         window.setView(view);
