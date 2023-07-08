@@ -5,6 +5,7 @@
 #include "texturelibrary.hpp"
 #include "game.hpp"
 #include "displayinfo.hpp"
+#include "level.hpp"
 
 bool Game::init() {
     bool success = true;
@@ -16,6 +17,23 @@ bool Game::init() {
     success &= textureLibrary.loadTexture("square", "res/square.png");
     success &= textureLibrary.loadTexture("phone", "res/phone.png");
     success &= textureLibrary.loadTexture("background", "res/testbackground.png");
+
+    Level* levelOne = new Level;
+    sf::Sprite pic(textureLibrary.getTexture("square"));
+    pic.setPosition(0, 0);
+    levelOne->addSprite(pic);
+    sf::Sprite otherPic(textureLibrary.getTexture("square"));
+    otherPic.setPosition(48, 48);
+    levelOne->addSprite(otherPic);
+    levelOne->setTargetIndex(1);
+    levels.push_back(levelOne);
+
+    Level* levelTwo = new Level;
+    sf::Sprite anotherPic(textureLibrary.getTexture("square"));
+    anotherPic.setPosition(16, 16);
+    levelTwo->addSprite(anotherPic);
+    levelTwo->setTargetIndex(0);
+    levels.push_back(levelTwo);
 
     return success;
 }
@@ -121,6 +139,10 @@ void Game::gameLoop() {
 
     sf::Clock clock;
 
+    currentLevel = -1;
+
+    loadLevel();
+
     while (!exit) {
 
         sf::Vector2i currentMousePos = getMousePosition();
@@ -136,6 +158,15 @@ void Game::gameLoop() {
                     event.mouseButton.button == sf::Mouse::Left) {
                 lockedMouse = true;
                 lockedMousePos = currentMousePos;
+                clampMousePosition(lockedMousePos);
+
+                if (levels[currentLevel]->captureTarget(view)) {
+                    std::cout << "Captured!\n";
+                }
+
+                loadLevel();
+
+                lockedMouse = false;
             }
         }
 
@@ -149,25 +180,18 @@ void Game::gameLoop() {
         }
         else {
             sf::Vector2i clampedMousePos = getMousePosition();
-            if (clampedMousePos.x / windowScale < units) {
-                clampedMousePos.x = windowScale * units;
-            }
-            else if (clampedMousePos.x / windowScale > gameRect.width - units) {
-                clampedMousePos.x = windowScale * (gameRect.width - units);
-            }
-
-            if (clampedMousePos.y / windowScale < units * 1.778f) {
-                clampedMousePos.y = windowScale * units * 1.778f;
-            }
-            else if (clampedMousePos.y / windowScale > gameRect.height - (units * 1.778f)) {
-                clampedMousePos.y = windowScale * (gameRect.height - (units * 1.778f));
-            }
+            clampMousePosition(clampedMousePos);
 
             window.setPosition(sf::Vector2i(clampedMousePos.x - windowSize.x / 2, clampedMousePos.y - windowSize.y / 2));
             view.setCenter(clampedMousePos.x, clampedMousePos.y);
         }
+
+        if (currentLevel == levels.size()) {
+            break;
+        }
+
         window.setView(view);
-        window.draw(background);
+        levels[currentLevel]->drawLevel(window);
 
         window.setView(window.getDefaultView());
         window.draw(phone);
@@ -189,5 +213,17 @@ void Game::openCredits() {
                 exit = true;
             }
         }
+    }
+}
+
+bool Game::loadLevel() {
+    currentLevel++;
+
+    return currentLevel == levels.size();
+}
+
+Game::~Game() {
+    for (int i = 0; i < levels.size(); i++) {
+        delete levels[i];
     }
 }

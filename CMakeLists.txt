@@ -7,7 +7,7 @@ FetchContent_Declare(SFML
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(GMTKGameJam2023 src/main.cpp src/displayinfo.cpp src/game.cpp src/fontlibrary.cpp src/texturelibrary.cpp)
+add_executable(GMTKGameJam2023 src/main.cpp src/displayinfo.cpp src/game.cpp src/level.cpp src/fontlibrary.cpp src/texturelibrary.cpp)
 target_link_libraries(GMTKGameJam2023 PRIVATE sfml-graphics)
 target_link_libraries(GMTKGameJam2023 PRIVATE sfml-audio)
 target_compile_features(GMTKGameJam2023 PRIVATE cxx_std_17)
