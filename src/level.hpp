@@ -6,12 +6,12 @@
 class Level {
 public:
 	void setTargetIndex(int index);
+	void setTargetSprite(sf::Sprite& sprite);
 	void addSprite(sf::Sprite sprite);
 	bool captureTarget(sf::View& view);
 	void drawLevel(sf::RenderWindow& window);
 	sf::RenderTexture* createPopup();
 private:
-	void setTargetSprite(sf::Sprite& sprite);
 
 	int targetIndex;
 	std::vector<sf::Sprite> sprites;

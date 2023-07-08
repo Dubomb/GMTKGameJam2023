@@ -18,15 +18,19 @@ bool Game::init() {
     success &= textureLibrary.loadTexture("phone", "res/phone.png");
     success &= textureLibrary.loadTexture("background", "res/testbackground.png");
     success &= textureLibrary.loadTexture("message-bg", "res/message-bg.png");
+    success &= textureLibrary.loadTexture("schoolbg", "res/levelbackground1.png");
+    success &= textureLibrary.loadTexture("bluesticky", "res/bluesticky.png");
+    success &= textureLibrary.loadTexture("orangemarker", "res/orangemarker.png");
 
     Level* levelOne = new Level;
-    sf::Sprite pic(textureLibrary.getTexture("square"));
-    pic.setPosition(0, 0);
-    levelOne->addSprite(pic);
-    sf::Sprite otherPic(textureLibrary.getTexture("square"));
-    otherPic.setPosition(48, 48);
-    levelOne->addSprite(otherPic);
+    sf::Sprite schoolbg(textureLibrary.getTexture("schoolbg"));
+    schoolbg.setPosition(0, 0);
+    levelOne->addSprite(schoolbg);
+    sf::Sprite orange(textureLibrary.getTexture("orangemarker"));
+    orange.setPosition(56, 25);
+    levelOne->addSprite(orange);
     levelOne->setTargetIndex(1);
+    levelOne->setTargetSprite(orange);
     levels.push_back(levelOne);
 
     Level* levelTwo = new Level;
@@ -34,7 +38,19 @@ bool Game::init() {
     anotherPic.setPosition(16, 16);
     levelTwo->addSprite(anotherPic);
     levelTwo->setTargetIndex(0);
+    levelTwo->setTargetSprite(anotherPic);
     levels.push_back(levelTwo);
+
+    Level* levelThree = new Level;
+    schoolbg = sf::Sprite(textureLibrary.getTexture("schoolbg"));
+    schoolbg.setPosition(0, 0);
+    levelThree->addSprite(schoolbg);
+    sf::Sprite blue(textureLibrary.getTexture("bluesticky"));
+    blue.setPosition(17, 118);
+    levelThree->addSprite(blue);
+    levelThree->setTargetIndex(1);
+    levelThree->setTargetSprite(blue);
+    levels.push_back(levelThree);
 
     return success;
 }
@@ -47,7 +63,6 @@ void Game::play() {
     TextureLibrary& textureLibrary = TextureLibrary::getInstance();
 
     sf::Vector2u fixed = getFixedDesktop();
-    std::cout << fixed.x << " " << fixed.y << std::endl;
 
     sf::Text playText("Play", fontLibrary.getFont("VT"), 64);
     playText.setFillColor(sf::Color::White);
@@ -134,8 +149,6 @@ void Game::gameLoop() {
 
     sf::View view;
     view.setSize((float)window.getSize().x, (float)window.getSize().y);
-
-    std::cout << window.getSize().x << " " << window.getSize().y << "\n";
 
     bool exit = false;
     bool lockedMouse = false;

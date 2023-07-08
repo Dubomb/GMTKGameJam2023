@@ -6,7 +6,6 @@
 
 void Level::setTargetIndex(int index) {
 	targetIndex = index;
-	setTargetSprite(sprites[index]);
 }
 
 void Level::addSprite(sf::Sprite sprite) {
@@ -18,15 +17,10 @@ void Level::addSprite(sf::Sprite sprite) {
 
 bool Level::captureTarget(sf::View& view) {
 	sf::Sprite& targetSprite = sprites[targetIndex];
-	std::cout << targetSprite.getGlobalBounds().left << " " << targetSprite.getGlobalBounds().top << "\n";
-	std::cout << targetSprite.getGlobalBounds().width << " " << targetSprite.getGlobalBounds().height << "\n";
 
 	sf::Rect<float> viewRect = { view.getCenter().x - view.getSize().x / 2,
 			view.getCenter().y - view.getSize().y / 2,
 			view.getSize().x, view.getSize().y };
-
-	std::cout << viewRect.left << " " << viewRect.top << "\n";
-	std::cout << viewRect.width << " " << viewRect.height << "\n";
 
 	return targetSprite.getGlobalBounds().intersects(viewRect);
 }
@@ -75,6 +69,6 @@ void Level::setTargetSprite(sf::Sprite& sprite) {
 	sf::Rect<float> spriteSize = targetSprite.getGlobalBounds();
 	float maxDim = std::max(spriteSize.width, spriteSize.height);
 	sf::Vector2i area(12.8f * scale, 12.8f * scale);
-	targetSprite.setScale(area.x * scale / maxDim, area.y * scale / maxDim);
+	targetSprite.setScale(area.x / maxDim, area.y / maxDim);
 	targetSprite.setPosition(26 * scale, 8 * scale);
 }
