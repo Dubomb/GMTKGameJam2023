@@ -14,13 +14,15 @@ bool Game::init() {
 
     TextureLibrary& textureLibrary = TextureLibrary::getInstance();
     success &= textureLibrary.loadTexture("square", "res/square.png");
+    success &= textureLibrary.loadTexture("phone", "res/phone.png");
+    success &= textureLibrary.loadTexture("background", "res/testbackground.png");
 
     return success;
 }
 
 void Game::play() {
     sf::Vector2u windowSize(600u, 480u);
-    auto window = sf::RenderWindow{ {600u, 480u}, "snapshot" };
+    auto window = sf::RenderWindow{ {600u, 480u}, "snapshot", sf::Style::Titlebar | sf::Style::Close };
 
     FontLibrary& fontLibrary = FontLibrary::getInstance();
     TextureLibrary& textureLibrary = TextureLibrary::getInstance();
@@ -84,43 +86,91 @@ void Game::play() {
 }
 
 void Game::gameLoop() {
+    const sf::Rect<unsigned int> gameRect = { 0u, 0u, 192u, 144u };
+    const unsigned int units = 16u;
     sf::Vector2u fixedSize(getFixedDesktop());
+    float windowScale = getScale(fixedSize);
 
     FontLibrary& fontLibrary = FontLibrary::getInstance();
     TextureLibrary& textureLibrary = TextureLibrary::getInstance();
 
-    const int windowScale = 6;
+    const int phoneScale = 4;
 
-    sf::Vector2u windowSize = sf::Vector2u(fixedSize.y / windowScale, fixedSize.x / windowScale);
+    sf::Vector2u windowSize = sf::Vector2u(fixedSize.y / phoneScale, fixedSize.x / phoneScale);
 
     sf::RenderWindow window(sf::VideoMode(windowSize.x, windowSize.y), "", sf::Style::None);
     window.setVerticalSyncEnabled(true);
     window.setVisible(true);
     window.setMouseCursorVisible(false);
 
-    std::cout << "Begin the game!\n";
+    sf::Sprite phone(textureLibrary.getTexture("phone"));
+    phone.setScale(windowScale, windowScale);
+
+    sf::Sprite background(textureLibrary.getTexture("background"));
+    background.setScale(windowScale, windowScale);
+    background.setPosition(0, 0);
+
+    sf::View view;
+    view.setSize((float)window.getSize().x, (float)window.getSize().y);
+
+    std::cout << window.getSize().x << " " << window.getSize().y << "\n";
 
     bool exit = false;
-    bool lockedMouse = true;
+    bool lockedMouse = false;
+    sf::Vector2i lockedMousePos(0, 0);
 
     sf::Clock clock;
 
     while (!exit) {
+
+        sf::Vector2i currentMousePos = getMousePosition();
+        float delta = clock.restart().asSeconds();
+
         for (auto event = sf::Event{}; window.pollEvent(event);) {
             if (event.type == sf::Event::KeyPressed &&
-                event.key.scancode == sf::Keyboard::Scan::Escape) {
+                    event.key.scancode == sf::Keyboard::Scan::Escape) {
                 exit = true;
+            }
+
+            if (event.type == sf::Event::MouseButtonPressed &&
+                    event.mouseButton.button == sf::Mouse::Left) {
+                lockedMouse = true;
+                lockedMousePos = currentMousePos;
             }
         }
 
-        window.clear(sf::Color(255, 255, 255, 255));
+        window.clear(sf::Color(32, 255, 128, 255));
 
         if (lockedMouse) {
-            window.setPosition(sf::Vector2i(fixedSize.x / 2 - windowSize.x / 2, fixedSize.y / 2 - windowSize.y / 2));
+            window.setPosition(sf::Vector2i(lockedMousePos.x - windowSize.x / 2,
+                lockedMousePos.y - windowSize.y / 2));
+            view.setCenter((float)lockedMousePos.x, (float)lockedMousePos.y);
+            setMousePosition(lockedMousePos);
         }
         else {
-            window.setPosition(sf::Vector2i(getMousePosition().x - windowSize.x / 2, getMousePosition().y - windowSize.y / 2));
+            sf::Vector2i clampedMousePos = getMousePosition();
+            if (clampedMousePos.x / windowScale < units) {
+                clampedMousePos.x = windowScale * units;
+            }
+            else if (clampedMousePos.x / windowScale > gameRect.width - units) {
+                clampedMousePos.x = windowScale * (gameRect.width - units);
+            }
+
+            if (clampedMousePos.y / windowScale < units * 1.778f) {
+                clampedMousePos.y = windowScale * units * 1.778f;
+            }
+            else if (clampedMousePos.y / windowScale > gameRect.height - (units * 1.778f)) {
+                clampedMousePos.y = windowScale * (gameRect.height - (units * 1.778f));
+            }
+
+            window.setPosition(sf::Vector2i(clampedMousePos.x - windowSize.x / 2, clampedMousePos.y - windowSize.y / 2));
+            view.setCenter(clampedMousePos.x, clampedMousePos.y);
         }
+        window.setView(view);
+        window.draw(background);
+
+        window.setView(window.getDefaultView());
+        window.draw(phone);
 
         window.display();
     }
