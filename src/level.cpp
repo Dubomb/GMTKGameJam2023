@@ -73,7 +73,8 @@ void Level::setTargetSprite(sf::Sprite& sprite) {
 	float scale = getScale(getFixedDesktop());
 	targetSprite = sprite;
 	sf::Rect<float> spriteSize = targetSprite.getGlobalBounds();
+	float maxDim = std::max(spriteSize.width, spriteSize.height);
 	sf::Vector2i area(12.8f * scale, 12.8f * scale);
-	targetSprite.setScale(area.x * scale / spriteSize.width, area.y * scale / spriteSize.height);
+	targetSprite.setScale(area.x * scale / maxDim, area.y * scale / maxDim);
 	targetSprite.setPosition(26 * scale, 8 * scale);
 }
