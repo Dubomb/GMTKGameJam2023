@@ -18,10 +18,15 @@ void Level::addSprite(sf::Sprite sprite) {
 
 bool Level::captureTarget(sf::View& view) {
 	sf::Sprite& targetSprite = sprites[targetIndex];
+	std::cout << targetSprite.getGlobalBounds().left << " " << targetSprite.getGlobalBounds().top << "\n";
+	std::cout << targetSprite.getGlobalBounds().width << " " << targetSprite.getGlobalBounds().height << "\n";
 
 	sf::Rect<float> viewRect = { view.getCenter().x - view.getSize().x / 2,
-			view.getCenter().x - view.getSize().x / 2,
+			view.getCenter().y - view.getSize().y / 2,
 			view.getSize().x, view.getSize().y };
+
+	std::cout << viewRect.left << " " << viewRect.top << "\n";
+	std::cout << viewRect.width << " " << viewRect.height << "\n";
 
 	return targetSprite.getGlobalBounds().intersects(viewRect);
 }
@@ -48,12 +53,14 @@ sf::RenderTexture* Level::createPopup() {
 	bg.setPosition(0, 0);
 	texture->draw(bg);
 
+	texture->draw(targetSprite);
+
 	FontLibrary& fl = FontLibrary::getInstance();
 	sf::Font font = fl.getFont("VT");
 	sf::Text message("Find", font, scale * 6);
 	message.setOrigin(message.getGlobalBounds().width * 0.5f, message.getGlobalBounds().height * 0.5f);
 	message.setPosition(texture->getSize().x * 0.3f, texture->getSize().y * 0.4f);
-	message.setOutlineThickness(2);
+	message.setOutlineThickness(4);
 	message.setOutlineColor(sf::Color::Black);
 	texture->draw(message);
 
@@ -63,5 +70,10 @@ sf::RenderTexture* Level::createPopup() {
 }
 
 void Level::setTargetSprite(sf::Sprite& sprite) {
+	float scale = getScale(getFixedDesktop());
 	targetSprite = sprite;
+	sf::Rect<float> spriteSize = targetSprite.getGlobalBounds();
+	sf::Vector2i area(12.8f * scale, 12.8f * scale);
+	targetSprite.setScale(area.x * scale / spriteSize.width, area.y * scale / spriteSize.height);
+	targetSprite.setPosition(26 * scale, 8 * scale);
 }

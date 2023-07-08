@@ -30,7 +30,7 @@ bool Game::init() {
     levels.push_back(levelOne);
 
     Level* levelTwo = new Level;
-    sf::Sprite anotherPic(textureLibrary.getTexture("square"));
+    sf::Sprite anotherPic(textureLibrary.getTexture("message-bg"));
     anotherPic.setPosition(16, 16);
     levelTwo->addSprite(anotherPic);
     levelTwo->setTargetIndex(0);
