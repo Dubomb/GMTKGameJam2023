@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <cmath>
 
 #include "displayinfo.hpp"
 
@@ -13,7 +14,7 @@ sf::Vector2u getFixedDesktop() {
 		fixed.x = fixed.y * 1.778f;
 	}
 	else {
-		fixed.y = ceil(fixed.x * 0.5624f);
+		fixed.y = std::ceil(fixed.x * 0.5624f);
 	}
 
 	return fixed;
