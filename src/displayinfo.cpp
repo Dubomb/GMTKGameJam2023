@@ -17,6 +17,10 @@ sf::Vector2u getFixedDesktop() {
 	return fixed;
 }
 
+float getScale(sf::Vector2u dim) {
+	return (float) dim.x / 256;
+}
+
 sf::Vector2i getMousePosition() {
 	return sf::Mouse::getPosition();
 }
