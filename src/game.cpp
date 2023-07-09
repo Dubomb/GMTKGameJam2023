@@ -37,6 +37,12 @@ bool Game::init() {
     success &= textureLibrary.loadTexture("incorrect", "res/incorrect.png");
     success &= textureLibrary.loadTexture("correct", "res/correct.png");
     success &= textureLibrary.loadTexture("results", "res/resultsbackground.png");
+    success &= textureLibrary.loadTexture("designbg", "res/levelbackground5.png");
+    success &= textureLibrary.loadTexture("bluetriangle", "res/bluetriangle.png");
+    success &= textureLibrary.loadTexture("eye", "res/eye.png");
+    success &= textureLibrary.loadTexture("eyebg", "res/levelbackground6.png");
+    success &= textureLibrary.loadTexture("paintings", "res/levelbackground7.png");
+    success &= textureLibrary.loadTexture("orange", "res/orange.png");
 
     Level* levelOne = new Level;
     sf::Sprite sky(textureLibrary.getTexture("nightsky"));
@@ -86,11 +92,11 @@ bool Game::init() {
     schoolbg = sf::Sprite(textureLibrary.getTexture("schoolbg"));
     schoolbg.setPosition(0, 0);
     levelFive->addSprite(schoolbg);
-    sf::Sprite orange(textureLibrary.getTexture("orangemarker"));
-    orange.setPosition(56, 25);
-    levelFive->addSprite(orange);
+    sf::Sprite orangeMarker(textureLibrary.getTexture("orangemarker"));
+    orangeMarker.setPosition(56, 25);
+    levelFive->addSprite(orangeMarker);
     levelFive->setTargetIndex(1);
-    levelFive->setTargetSprite(orange);
+    levelFive->setTargetSprite(orangeMarker);
     levels.push_back(levelFive);
 
     Level* levelSix = new Level;
@@ -115,6 +121,39 @@ bool Game::init() {
     levelSeven->setTargetIndex(1);
     levelSeven->setTargetSprite(flushed);
     levels.push_back(levelSeven);
+
+    Level* levelEight = new Level;
+    sf::Sprite designbg(textureLibrary.getTexture("designbg"));
+    designbg.setPosition(0, 0);
+    levelEight->addSprite(designbg);
+    sf::Sprite tri(textureLibrary.getTexture("bluetriangle"));
+    tri.setPosition(20, 36);
+    levelEight->addSprite(tri);
+    levelEight->setTargetIndex(1);
+    levelEight->setTargetSprite(tri);
+    levels.push_back(levelEight);
+
+    Level* levelNine = new Level;
+    sf::Sprite eyebg(textureLibrary.getTexture("eyebg"));
+    eyebg.setPosition(0, 0);
+    levelNine->addSprite(eyebg);
+    sf::Sprite eye(textureLibrary.getTexture("eye"));
+    eye.setPosition(115, 1);
+    levelNine->addSprite(eye);
+    levelNine->setTargetIndex(1);
+    levelNine->setTargetSprite(eye);
+    levels.push_back(levelNine);
+
+    Level* levelTen = new Level;
+    sf::Sprite paintings(textureLibrary.getTexture("paintings"));
+    paintings.setPosition(0, 0);
+    levelTen->addSprite(paintings);
+    sf::Sprite orange(textureLibrary.getTexture("orange"));
+    orange.setPosition(131, 56);
+    levelTen->addSprite(orange);
+    levelTen->setTargetIndex(1);
+    levelTen->setTargetSprite(orange);
+    levels.push_back(levelTen);
 
     return success;
 }
@@ -348,7 +387,7 @@ void Game::gameLoop() {
         int a = overlay.getColor().a;
         if (a > 0) {
             window.draw(overlay);
-            overlay.setColor(sf::Color(0, 0, 0, std::max(0.0f, a - delta * 1020.0f)));
+            overlay.setColor(sf::Color(0, 0, 0, std::max(0.0f, a - delta * 510.0f)));
         }
 
         window.setView(window.getDefaultView());
