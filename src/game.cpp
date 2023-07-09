@@ -33,6 +33,7 @@ bool Game::init() {
     success &= textureLibrary.loadTexture("flushedemoji", "res/flushedemoji.png");
     success &= textureLibrary.loadTexture("credits", "res/creditsbackground.png");
     success &= textureLibrary.loadTexture("menu", "res/menubackground.png");
+    success &= textureLibrary.loadTexture("logo", "res/logo.png");
 
     Level* levelOne = new Level;
     sf::Sprite sky(textureLibrary.getTexture("nightsky"));
@@ -128,16 +129,24 @@ void Game::play() {
     playText.setFillColor(sf::Color::White);
     playText.setOrigin(playText.getGlobalBounds().width / 2.0f,
             playText.getGlobalBounds().height / 2.0f);
-    playText.setPosition(float(windowSize.x * 0.5f), float(windowSize.y * 0.5f));
+    playText.setPosition(float(windowSize.x * 0.5f), float(windowSize.y * 0.6f));
+    playText.setOutlineThickness(4);
 
     sf::Text creditsText("Credits", fontLibrary.getFont("VT"), 64);
     creditsText.setFillColor(sf::Color::White);
     creditsText.setOrigin(creditsText.getGlobalBounds().width / 2.0f, 
             creditsText.getGlobalBounds().height / 2.0f);
     creditsText.setPosition(float(windowSize.x * 0.5f), float(windowSize.y * 0.75f));
+    creditsText.setOutlineThickness(4);
 
     sf::Sprite menubg(textureLibrary.getTexture("menu"));
     menubg.setScale(10, 10);
+
+    sf::Sprite logo(textureLibrary.getTexture("logo"));
+    logo.setOrigin(logo.getGlobalBounds().width * 0.5f,
+            logo.getGlobalBounds().height * 0.5f);
+    logo.setPosition(float(windowSize.x * 0.5f), float(windowSize.y * 0.3f));
+    logo.setScale(6, 6);
 
     sf::Clock time;
 
@@ -174,6 +183,7 @@ void Game::play() {
         window.clear();
 
         window.draw(menubg);
+        window.draw(logo);
         window.draw(playText);
         window.draw(creditsText);
 
