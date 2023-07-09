@@ -244,12 +244,18 @@ void Game::gameLoop() {
     sf::View view;
     view.setSize((float)window.getSize().x, (float)window.getSize().y);
 
-    // Music
+    // Audio
     sf::Music bgMusic;
     if (!bgMusic.openFromFile("res/celeste.ogg")) {
         return;
     }
     bgMusic.play();
+
+    sf::SoundBuffer snapBuf;
+    if (!snapBuf.loadFromFile("res/snap.wav")) {
+        return;
+    }
+    sf::Sound snap(snapBuf);
 
     // Game state
     bool exit = false;
@@ -270,7 +276,7 @@ void Game::gameLoop() {
     popupWindow.display();
     delete texture;
 
-    const float clickMax = 2.0f;
+    const float clickMax = 1.0f;
     float timeSinceClick = 0;
 
     while (!exit) {
@@ -287,6 +293,7 @@ void Game::gameLoop() {
             if (event.type == sf::Event::MouseButtonPressed &&
                     event.mouseButton.button == sf::Mouse::Left) {
                 lockedMouse = true;
+                snap.play();
                 overlay.setColor(sf::Color(0, 0, 0, 255));
                 if (levels[currentLevel]->captureTarget(view)) {
                     correct.setColor(sf::Color(255, 255, 255, 255));
