@@ -36,6 +36,7 @@ bool Game::init() {
     success &= textureLibrary.loadTexture("logo", "res/logo.png");
     success &= textureLibrary.loadTexture("incorrect", "res/incorrect.png");
     success &= textureLibrary.loadTexture("correct", "res/correct.png");
+    success &= textureLibrary.loadTexture("results", "res/resultsbackground.png");
 
     Level* levelOne = new Level;
     sf::Sprite sky(textureLibrary.getTexture("nightsky"));
@@ -249,6 +250,8 @@ void Game::gameLoop() {
     if (!bgMusic.openFromFile("res/celeste.ogg")) {
         return;
     }
+    bgMusic.setVolume(80);
+    bgMusic.setLoop(true);
     bgMusic.play();
 
     sf::SoundBuffer snapBuf;
@@ -261,7 +264,10 @@ void Game::gameLoop() {
     bool exit = false;
     bool lockedMouse = false;
     sf::Vector2i lockedMousePos(0, 0);
+    int correctCount = 0;
+    int incorrectCount = 0;
 
+    // Misc
     sf::Clock clock;
 
     currentLevel = -1;
@@ -299,16 +305,18 @@ void Game::gameLoop() {
                     correct.setColor(sf::Color(255, 255, 255, 255));
                     incorrect.setColor(sf::Color(255, 255, 255, 0));
                     timeSinceClick = 0;
+                    correctCount++;
                 }
                 else {
                     incorrect.setColor(sf::Color(255, 255, 255, 255));
                     correct.setColor(sf::Color(255, 255, 255, 0));
                     timeSinceClick = 0;
+                    incorrectCount++;
                 }
             }
         }
 
-        window.clear(sf::Color(32, 255, 128, 255));
+        window.clear();
 
         sf::Vector2i clampedMousePos = getMousePosition();
         clampMousePosition(clampedMousePos);
@@ -361,6 +369,49 @@ void Game::gameLoop() {
     }
 
     window.close();
+    popupWindow.close();
+
+    sf::RenderWindow results(sf::VideoMode(600, 480), "Results!", sf::Style::Titlebar | sf::Style::Close);
+
+    correct.setPosition(150, 200);
+    correct.setColor(sf::Color::White);
+    incorrect.setPosition(450, 200);
+    incorrect.setColor(sf::Color::White);
+
+    sf::Text correctText(std::to_string(correctCount), fontLibrary.getFont("VT"), 64);
+    correctText.setOrigin(correctText.getGlobalBounds().width * 0.5f,
+        correctText.getGlobalBounds().height * 0.5f);
+    correctText.setPosition(150, 340);
+    correctText.setOutlineThickness(4);
+
+    sf::Text incorrectText(std::to_string(incorrectCount), fontLibrary.getFont("VT"), 64);
+    incorrectText.setOrigin(incorrectText.getGlobalBounds().width * 0.5f,
+        incorrectText.getGlobalBounds().height * 0.5f);
+    incorrectText.setPosition(450, 340);
+    incorrectText.setOutlineThickness(4);
+
+    sf::Sprite resultsbg(textureLibrary.getTexture("results"));
+    resultsbg.setPosition(0, 0);
+    resultsbg.setScale(10, 10);
+
+    while (results.isOpen()) {
+        for (sf::Event event = sf::Event{}; results.pollEvent(event);) {
+            if (event.type == sf::Event::Closed) {
+                results.close();
+            }
+        }
+
+        results.clear();
+
+        results.draw(resultsbg);
+        results.draw(correct);
+        results.draw(incorrect);
+        results.draw(correctText);
+        results.draw(incorrectText);
+
+        results.display();
+    }
+
     clock.restart();
 
     while (bgMusic.getVolume() > 0.0f) {
