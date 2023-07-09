@@ -16,7 +16,6 @@ bool Game::init() {
     TextureLibrary& textureLibrary = TextureLibrary::getInstance();
     success &= textureLibrary.loadTexture("square", "res/square.png");
     success &= textureLibrary.loadTexture("phone", "res/phone.png");
-    success &= textureLibrary.loadTexture("background", "res/testbackground.png");
     success &= textureLibrary.loadTexture("message-bg", "res/message-bg.png");
     success &= textureLibrary.loadTexture("schoolbg", "res/levelbackground1.png");
     success &= textureLibrary.loadTexture("bluesticky", "res/bluesticky.png");
@@ -91,7 +90,7 @@ bool Game::init() {
     bedroom.setPosition(0, 0);
     levelSix->addSprite(bedroom);
     sf::Sprite train(textureLibrary.getTexture("darkgreentraincut"));
-    train.setPosition(145, 107);
+    train.setPosition(144, 107);
     levelSix->addSprite(train);
     levelSix->setTargetIndex(1);
     sf::Sprite trainFull(textureLibrary.getTexture("darkgreentrain"));
@@ -177,16 +176,18 @@ void Game::play() {
 }
 
 void Game::gameLoop() {
+    // Game info
     const sf::Rect<unsigned int> gameRect = { 0u, 0u, 192u, 144u };
     const unsigned int units = 16u;
     sf::Vector2u fixedSize(getFixedDesktop());
     float windowScale = getScale(fixedSize);
+    const int phoneScale = 4;
 
+    // Libraries
     FontLibrary& fontLibrary = FontLibrary::getInstance();
     TextureLibrary& textureLibrary = TextureLibrary::getInstance();
 
-    const int phoneScale = 4;
-
+    // Windows
     sf::Vector2u windowSize = sf::Vector2u(fixedSize.y / phoneScale, fixedSize.x / phoneScale);
 
     sf::RenderWindow window(sf::VideoMode(windowSize.x, windowSize.y), "", sf::Style::None);
@@ -197,16 +198,19 @@ void Game::gameLoop() {
     sf::RenderWindow popupWindow;
     popupWindow.setVerticalSyncEnabled(true);
 
+    // Sprites
+    sf::Sprite overlay(textureLibrary.getTexture("square"));
+    overlay.setColor(sf::Color(0, 0, 0, 0));
+    overlay.setPosition(0, 0);
+    overlay.setScale(windowScale, windowScale);
+
     sf::Sprite phone(textureLibrary.getTexture("phone"));
     phone.setScale(windowScale, windowScale);
-
-    sf::Sprite background(textureLibrary.getTexture("background"));
-    background.setScale(windowScale, windowScale);
-    background.setPosition(0, 0);
 
     sf::View view;
     view.setSize((float)window.getSize().x, (float)window.getSize().y);
 
+    // Game state
     bool exit = false;
     bool lockedMouse = false;
     sf::Vector2i lockedMousePos(0, 0);
@@ -239,9 +243,7 @@ void Game::gameLoop() {
             if (event.type == sf::Event::MouseButtonPressed &&
                     event.mouseButton.button == sf::Mouse::Left) {
                 lockedMouse = true;
-                lockedMousePos = currentMousePos;
-                clampMousePosition(lockedMousePos);
-
+                overlay.setColor(sf::Color(0, 0, 0, 255));
                 if (levels[currentLevel]->captureTarget(view)) {
                     std::cout << "Captured!\n";
                 }
@@ -250,19 +252,11 @@ void Game::gameLoop() {
 
         window.clear(sf::Color(32, 255, 128, 255));
 
-        if (lockedMouse) {
-            window.setPosition(sf::Vector2i(lockedMousePos.x - windowSize.x / 2,
-                lockedMousePos.y - windowSize.y / 2));
-            view.setCenter((float)lockedMousePos.x, (float)lockedMousePos.y);
-            setMousePosition(lockedMousePos);
-        }
-        else {
-            sf::Vector2i clampedMousePos = getMousePosition();
-            clampMousePosition(clampedMousePos);
+        sf::Vector2i clampedMousePos = getMousePosition();
+        clampMousePosition(clampedMousePos);
 
-            window.setPosition(sf::Vector2i(clampedMousePos.x - windowSize.x / 2, clampedMousePos.y - windowSize.y / 2));
-            view.setCenter(clampedMousePos.x, clampedMousePos.y);
-        }
+        window.setPosition(sf::Vector2i(clampedMousePos.x - windowSize.x / 2, clampedMousePos.y - windowSize.y / 2));
+        view.setCenter(clampedMousePos.x, clampedMousePos.y);
 
         if (lockedMouse) {
             loadLevel();
@@ -284,6 +278,12 @@ void Game::gameLoop() {
 
         window.setView(view);
         levels[currentLevel]->drawLevel(window);
+
+        int a = overlay.getColor().a;
+        if (a > 0) {
+            window.draw(overlay);
+            overlay.setColor(sf::Color(0, 0, 0, std::max(0.0f, a - delta * 1020.0f)));
+        }
 
         window.setView(window.getDefaultView());
         window.draw(phone);
