@@ -53,7 +53,7 @@ bool Game::init() {
     levelOne->addSprite(moustache);
     levelOne->setTargetIndex(1);
     levelOne->setTargetSprite(moustache);
-    levels.push_back(levelOne);
+    
 
     Level* levelTwo = new Level;
     sf::Sprite grassbg(textureLibrary.getTexture("grassbg"));
@@ -64,7 +64,7 @@ bool Game::init() {
     levelTwo->addSprite(grassblade);
     levelTwo->setTargetIndex(1);
     levelTwo->setTargetSprite(grassblade);
-    levels.push_back(levelTwo);
+    
 
     Level* levelThree = new Level;
     sf::Sprite schoolbg(textureLibrary.getTexture("schoolbg"));
@@ -75,7 +75,7 @@ bool Game::init() {
     levelThree->addSprite(blue);
     levelThree->setTargetIndex(1);
     levelThree->setTargetSprite(blue);
-    levels.push_back(levelThree);
+    
 
     Level* levelFour = new Level;
     grassbg = sf::Sprite(textureLibrary.getTexture("grassbg"));
@@ -86,7 +86,7 @@ bool Game::init() {
     levelFour->addSprite(rock);
     levelFour->setTargetIndex(1);
     levelFour->setTargetSprite(rock);
-    levels.push_back(levelFour);
+    
 
     Level* levelFive = new Level;
     schoolbg = sf::Sprite(textureLibrary.getTexture("schoolbg"));
@@ -97,7 +97,7 @@ bool Game::init() {
     levelFive->addSprite(orangeMarker);
     levelFive->setTargetIndex(1);
     levelFive->setTargetSprite(orangeMarker);
-    levels.push_back(levelFive);
+    
 
     Level* levelSix = new Level;
     sf::Sprite bedroom(textureLibrary.getTexture("bedroom"));
@@ -109,7 +109,7 @@ bool Game::init() {
     levelSix->setTargetIndex(1);
     sf::Sprite trainFull(textureLibrary.getTexture("darkgreentrain"));
     levelSix->setTargetSprite(trainFull);
-    levels.push_back(levelSix);
+    
 
     Level* levelSeven = new Level;
     sky = sf::Sprite(textureLibrary.getTexture("nightsky"));
@@ -120,7 +120,7 @@ bool Game::init() {
     levelSeven->addSprite(flushed);
     levelSeven->setTargetIndex(1);
     levelSeven->setTargetSprite(flushed);
-    levels.push_back(levelSeven);
+    
 
     Level* levelEight = new Level;
     sf::Sprite designbg(textureLibrary.getTexture("designbg"));
@@ -131,7 +131,7 @@ bool Game::init() {
     levelEight->addSprite(tri);
     levelEight->setTargetIndex(1);
     levelEight->setTargetSprite(tri);
-    levels.push_back(levelEight);
+    
 
     Level* levelNine = new Level;
     sf::Sprite eyebg(textureLibrary.getTexture("eyebg"));
@@ -142,18 +142,28 @@ bool Game::init() {
     levelNine->addSprite(eye);
     levelNine->setTargetIndex(1);
     levelNine->setTargetSprite(eye);
-    levels.push_back(levelNine);
+    
 
     Level* levelTen = new Level;
     sf::Sprite paintings(textureLibrary.getTexture("paintings"));
     paintings.setPosition(0, 0);
     levelTen->addSprite(paintings);
     sf::Sprite orange(textureLibrary.getTexture("orange"));
-    orange.setPosition(131, 56);
+    orange.setPosition(140, 11);
     levelTen->addSprite(orange);
     levelTen->setTargetIndex(1);
     levelTen->setTargetSprite(orange);
+    
     levels.push_back(levelTen);
+    levels.push_back(levelEight);
+    levels.push_back(levelThree);
+    levels.push_back(levelNine);
+    levels.push_back(levelOne);
+    levels.push_back(levelFour);
+    levels.push_back(levelFive);
+    levels.push_back(levelSix);
+    levels.push_back(levelTwo);
+    levels.push_back(levelSeven);
 
     return success;
 }
