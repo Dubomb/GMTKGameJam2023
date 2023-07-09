@@ -1,5 +1,7 @@
 #include <iostream>
+#include <string>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 #include "fontlibrary.hpp"
 #include "texturelibrary.hpp"
@@ -29,6 +31,8 @@ bool Game::init() {
     success &= textureLibrary.loadTexture("darkgreentrain", "res/darkgreentrain.png");
     success &= textureLibrary.loadTexture("darkgreentraincut", "res/darkgreentraincut.png");
     success &= textureLibrary.loadTexture("flushedemoji", "res/flushedemoji.png");
+    success &= textureLibrary.loadTexture("credits", "res/creditsbackground.png");
+    success &= textureLibrary.loadTexture("menu", "res/menubackground.png");
 
     Level* levelOne = new Level;
     sf::Sprite sky(textureLibrary.getTexture("nightsky"));
@@ -132,6 +136,9 @@ void Game::play() {
             creditsText.getGlobalBounds().height / 2.0f);
     creditsText.setPosition(float(windowSize.x * 0.5f), float(windowSize.y * 0.75f));
 
+    sf::Sprite menubg(textureLibrary.getTexture("menu"));
+    menubg.setScale(10, 10);
+
     sf::Clock time;
 
     bool quit = false;
@@ -166,6 +173,7 @@ void Game::play() {
 
         window.clear();
 
+        window.draw(menubg);
         window.draw(playText);
         window.draw(creditsText);
 
@@ -209,6 +217,13 @@ void Game::gameLoop() {
 
     sf::View view;
     view.setSize((float)window.getSize().x, (float)window.getSize().y);
+
+    // Music
+    sf::Music bgMusic;
+    if (!bgMusic.openFromFile("res/celeste.ogg")) {
+        return;
+    }
+    bgMusic.play();
 
     // Game state
     bool exit = false;
@@ -290,21 +305,90 @@ void Game::gameLoop() {
 
         window.display();
     }
+
+    window.close();
+    clock.restart();
+
+    while (bgMusic.getVolume() > 0.0f) {
+        bgMusic.setVolume(std::max(bgMusic.getVolume() - 200.0f * clock.restart().asSeconds(), 0.0f));
+    }
+
+    bgMusic.stop();
 }
 
 void Game::openCredits() {
+    const sf::Vector2u windowSize(600u, 480u);
     auto window = sf::RenderWindow{ { 600u, 480u }, "Credits", sf::Style::Titlebar };
     window.setVerticalSyncEnabled(true);
+
+    FontLibrary& fl = FontLibrary::getInstance();
+    TextureLibrary& tl = TextureLibrary::getInstance();
+
+    sf::Font font = fl.getFont("VT");
+
+    sf::Text programming("Programming: Dubomb", font, 40);
+    programming.setOrigin(programming.getGlobalBounds().width * 0.5f,
+        programming.getGlobalBounds().height * 0.5f);
+    programming.setPosition(windowSize.x * 0.5f, windowSize.y * 0.1f);
+    programming.setOutlineThickness(2);
+
+    sf::Text art("Art: Dubomb", font, 40);
+    art.setOrigin(art.getGlobalBounds().width * 0.5f,
+        art.getGlobalBounds().height * 0.5f);
+    art.setPosition(windowSize.x * 0.5f, windowSize.y * 0.3f);
+    art.setOutlineThickness(2);
+
+    sf::Text gameDesign("Game Design: Dubomb", font, 40);
+    gameDesign.setOrigin(gameDesign.getGlobalBounds().width * 0.5f,
+        gameDesign.getGlobalBounds().height * 0.5f);
+    gameDesign.setPosition(windowSize.x * 0.5f, windowSize.y * 0.5f);
+    gameDesign.setOutlineThickness(2);
+
+    sf::Text soundEffects("Sound Effects: Dubomb", font, 40);
+    soundEffects.setOrigin(soundEffects.getGlobalBounds().width * 0.5f,
+        soundEffects.getGlobalBounds().height * 0.5f);
+    soundEffects.setPosition(windowSize.x * 0.5f, windowSize.y * 0.7f);
+    soundEffects.setOutlineThickness(2);
+
+    sf::Text music("Music: Epsidev - Celeste (ft. Artifact & M4N)", font, 32);
+    music.setOrigin(music.getGlobalBounds().width * 0.5f,
+        music.getGlobalBounds().height * 0.5f);
+    music.setPosition(windowSize.x * 0.5f, windowSize.y * 0.9f);
+    music.setOutlineThickness(2);
+    music.setStyle(sf::Text::Underlined);
+
+    sf::Sprite creditsbg(tl.getTexture("credits"));
+    creditsbg.setScale(10, 10);
+    creditsbg.setColor(sf::Color(125, 125, 125, 255));
 
     bool exit = false;
 
     while (!exit) {
         for (auto event = sf::Event{}; window.pollEvent(event);) {
             if (event.type == sf::Event::KeyPressed &&
-                        event.key.scancode == sf::Keyboard::Scan::Escape) {
+                    event.key.scancode == sf::Keyboard::Scan::Escape) {
                 exit = true;
             }
+
+            if (event.type == sf::Event::MouseButtonPressed &&
+                    event.mouseButton.button == sf::Mouse::Left) {
+                if (music.getGlobalBounds().contains(getWindowMousePosition(window).x, getWindowMousePosition(window).y)) {
+                    std::string op = "start https://www.youtube.com/watch?v=8JjL1tVnBHw";
+                    std::system(op.c_str());
+                }
+            }
         }
+
+        window.clear();
+
+        window.draw(creditsbg);
+        window.draw(programming);
+        window.draw(art);
+        window.draw(gameDesign);
+        window.draw(soundEffects);
+        window.draw(music);
+
+        window.display();
     }
 }
 
