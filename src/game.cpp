@@ -21,28 +21,40 @@ bool Game::init() {
     success &= textureLibrary.loadTexture("schoolbg", "res/levelbackground1.png");
     success &= textureLibrary.loadTexture("bluesticky", "res/bluesticky.png");
     success &= textureLibrary.loadTexture("orangemarker", "res/orangemarker.png");
+    success &= textureLibrary.loadTexture("grassblade", "res/grassblade.png");
+    success &= textureLibrary.loadTexture("grassbg", "res/levelbackground2.png");
+    success &= textureLibrary.loadTexture("rock", "res/rock.png");
+    success &= textureLibrary.loadTexture("nightsky", "res/levelbackground3.png");
+    success &= textureLibrary.loadTexture("moustache", "res/moustache.png");
+    success &= textureLibrary.loadTexture("bedroom", "res/levelbackground4.png");
+    success &= textureLibrary.loadTexture("darkgreentrain", "res/darkgreentrain.png");
+    success &= textureLibrary.loadTexture("darkgreentraincut", "res/darkgreentraincut.png");
+    success &= textureLibrary.loadTexture("flushedemoji", "res/flushedemoji.png");
 
     Level* levelOne = new Level;
-    sf::Sprite schoolbg(textureLibrary.getTexture("schoolbg"));
-    schoolbg.setPosition(0, 0);
-    levelOne->addSprite(schoolbg);
-    sf::Sprite orange(textureLibrary.getTexture("orangemarker"));
-    orange.setPosition(56, 25);
-    levelOne->addSprite(orange);
+    sf::Sprite sky(textureLibrary.getTexture("nightsky"));
+    sky.setPosition(0, 0);
+    levelOne->addSprite(sky);
+    sf::Sprite moustache(textureLibrary.getTexture("moustache"));
+    moustache.setPosition(173, 23);
+    levelOne->addSprite(moustache);
     levelOne->setTargetIndex(1);
-    levelOne->setTargetSprite(orange);
+    levelOne->setTargetSprite(moustache);
     levels.push_back(levelOne);
 
     Level* levelTwo = new Level;
-    sf::Sprite anotherPic(textureLibrary.getTexture("message-bg"));
-    anotherPic.setPosition(16, 16);
-    levelTwo->addSprite(anotherPic);
-    levelTwo->setTargetIndex(0);
-    levelTwo->setTargetSprite(anotherPic);
+    sf::Sprite grassbg(textureLibrary.getTexture("grassbg"));
+    grassbg.setPosition(0, 0);
+    levelTwo->addSprite(grassbg);
+    sf::Sprite grassblade(textureLibrary.getTexture("grassblade"));
+    grassblade.setPosition(93, 79);
+    levelTwo->addSprite(grassblade);
+    levelTwo->setTargetIndex(1);
+    levelTwo->setTargetSprite(grassblade);
     levels.push_back(levelTwo);
 
     Level* levelThree = new Level;
-    schoolbg = sf::Sprite(textureLibrary.getTexture("schoolbg"));
+    sf::Sprite schoolbg(textureLibrary.getTexture("schoolbg"));
     schoolbg.setPosition(0, 0);
     levelThree->addSprite(schoolbg);
     sf::Sprite blue(textureLibrary.getTexture("bluesticky"));
@@ -51,6 +63,51 @@ bool Game::init() {
     levelThree->setTargetIndex(1);
     levelThree->setTargetSprite(blue);
     levels.push_back(levelThree);
+
+    Level* levelFour = new Level;
+    grassbg = sf::Sprite(textureLibrary.getTexture("grassbg"));
+    grassbg.setPosition(0, 0);
+    levelFour->addSprite(grassbg);
+    sf::Sprite rock(textureLibrary.getTexture("rock"));
+    rock.setPosition(69, 113);
+    levelFour->addSprite(rock);
+    levelFour->setTargetIndex(1);
+    levelFour->setTargetSprite(rock);
+    levels.push_back(levelFour);
+
+    Level* levelFive = new Level;
+    schoolbg = sf::Sprite(textureLibrary.getTexture("schoolbg"));
+    schoolbg.setPosition(0, 0);
+    levelFive->addSprite(schoolbg);
+    sf::Sprite orange(textureLibrary.getTexture("orangemarker"));
+    orange.setPosition(56, 25);
+    levelFive->addSprite(orange);
+    levelFive->setTargetIndex(1);
+    levelFive->setTargetSprite(orange);
+    levels.push_back(levelFive);
+
+    Level* levelSix = new Level;
+    sf::Sprite bedroom(textureLibrary.getTexture("bedroom"));
+    bedroom.setPosition(0, 0);
+    levelSix->addSprite(bedroom);
+    sf::Sprite train(textureLibrary.getTexture("darkgreentraincut"));
+    train.setPosition(145, 107);
+    levelSix->addSprite(train);
+    levelSix->setTargetIndex(1);
+    sf::Sprite trainFull(textureLibrary.getTexture("darkgreentrain"));
+    levelSix->setTargetSprite(trainFull);
+    levels.push_back(levelSix);
+
+    Level* levelSeven = new Level;
+    sky = sf::Sprite(textureLibrary.getTexture("nightsky"));
+    sky.setPosition(0, 0);
+    levelSeven->addSprite(sky);
+    sf::Sprite flushed(textureLibrary.getTexture("flushedemoji"));
+    flushed.setPosition(185, 91);
+    levelSeven->addSprite(flushed);
+    levelSeven->setTargetIndex(1);
+    levelSeven->setTargetSprite(flushed);
+    levels.push_back(levelSeven);
 
     return success;
 }
