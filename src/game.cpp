@@ -275,7 +275,7 @@ void Game::gameLoop() {
     loadLevel();
 
     popupWindow.create(sf::VideoMode(48 * windowScale, 32 * windowScale), "New message!", sf::Style::None);
-    popupWindow.setPosition(sf::Vector2i(fixedSize.x * 0.85f - 32 * windowScale / 2, fixedSize.y * 0.5f - 48 * windowScale / 2));
+    popupWindow.setPosition(sf::Vector2i(fixedSize.x - windowSize.x * 1.5f, fixedSize.y * 0.5f - 48 * windowScale / 2));
     popupWindow.clear();
     sf::RenderTexture* texture = levels[currentLevel]->createPopup();
     popupWindow.draw(sf::Sprite(texture->getTexture()));
@@ -332,7 +332,7 @@ void Game::gameLoop() {
             }
 
             popupWindow.create(sf::VideoMode(48 * windowScale, 32 * windowScale), "New message!", sf::Style::None);
-            popupWindow.setPosition(sf::Vector2i(fixedSize.x * 0.85f - 32 * windowScale / 2, fixedSize.y * 0.5f - 48 * windowScale / 2));
+            popupWindow.setPosition(sf::Vector2i(fixedSize.x - windowSize.x * 1.5f, fixedSize.y * 0.5f - 48 * windowScale / 2));
             popupWindow.clear();
             texture = levels[currentLevel]->createPopup();
             popupWindow.draw(sf::Sprite(texture->getTexture()));

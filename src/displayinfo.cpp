@@ -11,6 +11,10 @@ sf::Vector2u getFixedDesktop() {
 	sf::Vector2u fixed = getDesktopSize();
 
 	if (fixed.x > fixed.y) {
+		if (fixed.x / fixed.y < 1.7778f) {
+			fixed.y = std::ceil(fixed.x * 0.5624f);
+		}
+
 		fixed.x = fixed.y * 1.778f;
 	}
 	else {
