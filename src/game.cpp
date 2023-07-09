@@ -330,14 +330,17 @@ void Game::gameLoop() {
         float delta = clock.restart().asSeconds();
 
         for (auto event = sf::Event{}; window.pollEvent(event);) {
-            if (event.type == sf::Event::KeyPressed &&
-                    event.key.scancode == sf::Keyboard::Scan::Escape) {
-                exit = true;
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.scancode == sf::Keyboard::Scan::Escape) {
+                    exit = true;
+                }
+                else if (event.key.scancode == sf::Keyboard::Scan::S) {
+                    lockedMouse = true;
+                }
             }
 
             if (event.type == sf::Event::MouseButtonPressed &&
                     event.mouseButton.button == sf::Mouse::Left) {
-                lockedMouse = true;
                 snap.play();
                 overlay.setColor(sf::Color(0, 0, 0, 255));
                 if (levels[currentLevel]->captureTarget(view)) {
@@ -345,6 +348,7 @@ void Game::gameLoop() {
                     incorrect.setColor(sf::Color(255, 255, 255, 0));
                     timeSinceClick = 0;
                     correctCount++;
+                    lockedMouse = true;
                 }
                 else {
                     incorrect.setColor(sf::Color(255, 255, 255, 255));
