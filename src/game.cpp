@@ -308,6 +308,7 @@ void Game::gameLoop() {
 
     // Misc
     sf::Clock clock;
+    sf::Clock totalTime;
 
     currentLevel = -1;
 
@@ -416,21 +417,28 @@ void Game::gameLoop() {
 
     sf::RenderWindow results(sf::VideoMode(600, 480), "Results!", sf::Style::Titlebar | sf::Style::Close);
 
-    correct.setPosition(150, 200);
+    int totalSeconds = totalTime.getElapsedTime().asSeconds();
+    sf::Text timeText("Time: " + std::to_string(totalSeconds) + "s", fontLibrary.getFont("VT"), 48);
+    timeText.setOrigin(timeText.getGlobalBounds().width * 0.5f,
+        timeText.getGlobalBounds().height * 0.5f);
+    timeText.setPosition(300, 50);
+    timeText.setOutlineThickness(4);
+
+    correct.setPosition(150, 250);
     correct.setColor(sf::Color::White);
-    incorrect.setPosition(450, 200);
+    incorrect.setPosition(450, 250);
     incorrect.setColor(sf::Color::White);
 
     sf::Text correctText(std::to_string(correctCount), fontLibrary.getFont("VT"), 64);
     correctText.setOrigin(correctText.getGlobalBounds().width * 0.5f,
         correctText.getGlobalBounds().height * 0.5f);
-    correctText.setPosition(150, 340);
+    correctText.setPosition(150, 350);
     correctText.setOutlineThickness(4);
 
     sf::Text incorrectText(std::to_string(incorrectCount), fontLibrary.getFont("VT"), 64);
     incorrectText.setOrigin(incorrectText.getGlobalBounds().width * 0.5f,
         incorrectText.getGlobalBounds().height * 0.5f);
-    incorrectText.setPosition(450, 340);
+    incorrectText.setPosition(450, 350);
     incorrectText.setOutlineThickness(4);
 
     sf::Sprite resultsbg(textureLibrary.getTexture("results"));
@@ -451,6 +459,7 @@ void Game::gameLoop() {
         results.draw(incorrect);
         results.draw(correctText);
         results.draw(incorrectText);
+        results.draw(timeText);
 
         results.display();
     }
