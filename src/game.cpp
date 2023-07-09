@@ -34,6 +34,8 @@ bool Game::init() {
     success &= textureLibrary.loadTexture("credits", "res/creditsbackground.png");
     success &= textureLibrary.loadTexture("menu", "res/menubackground.png");
     success &= textureLibrary.loadTexture("logo", "res/logo.png");
+    success &= textureLibrary.loadTexture("incorrect", "res/incorrect.png");
+    success &= textureLibrary.loadTexture("correct", "res/correct.png");
 
     Level* levelOne = new Level;
     sf::Sprite sky(textureLibrary.getTexture("nightsky"));
@@ -225,6 +227,20 @@ void Game::gameLoop() {
     sf::Sprite phone(textureLibrary.getTexture("phone"));
     phone.setScale(windowScale, windowScale);
 
+    sf::Sprite correct(textureLibrary.getTexture("correct"));
+    correct.setOrigin(correct.getGlobalBounds().width * 0.5f,
+        correct.getGlobalBounds().height * 0.5f);
+    correct.setPosition(windowSize.x * 0.5f, windowSize.y * 0.5f);
+    correct.setScale(windowScale, windowScale);
+    correct.setColor(sf::Color(255, 255, 255, 0));
+
+    sf::Sprite incorrect(textureLibrary.getTexture("incorrect"));
+    incorrect.setOrigin(incorrect.getGlobalBounds().width * 0.5f,
+        incorrect.getGlobalBounds().height * 0.5f);
+    incorrect.setPosition(windowSize.x * 0.5f, windowSize.y * 0.5f);
+    incorrect.setScale(windowScale, windowScale);
+    incorrect.setColor(sf::Color(255, 255, 255, 0));
+
     sf::View view;
     view.setSize((float)window.getSize().x, (float)window.getSize().y);
 
@@ -254,6 +270,9 @@ void Game::gameLoop() {
     popupWindow.display();
     delete texture;
 
+    const float clickMax = 2.0f;
+    float timeSinceClick = 0;
+
     while (!exit) {
 
         sf::Vector2i currentMousePos = getMousePosition();
@@ -270,7 +289,14 @@ void Game::gameLoop() {
                 lockedMouse = true;
                 overlay.setColor(sf::Color(0, 0, 0, 255));
                 if (levels[currentLevel]->captureTarget(view)) {
-                    std::cout << "Captured!\n";
+                    correct.setColor(sf::Color(255, 255, 255, 255));
+                    incorrect.setColor(sf::Color(255, 255, 255, 0));
+                    timeSinceClick = 0;
+                }
+                else {
+                    incorrect.setColor(sf::Color(255, 255, 255, 255));
+                    correct.setColor(sf::Color(255, 255, 255, 0));
+                    timeSinceClick = 0;
                 }
             }
         }
@@ -312,6 +338,17 @@ void Game::gameLoop() {
 
         window.setView(window.getDefaultView());
         window.draw(phone);
+
+        if (timeSinceClick < clickMax) {
+            timeSinceClick += delta;
+
+            if (timeSinceClick > clickMax) {
+                correct.setColor(sf::Color(255, 255, 255, 0));
+                incorrect.setColor(sf::Color(255, 255, 255, 0));
+            }
+        }
+        window.draw(correct);
+        window.draw(incorrect);
 
         window.display();
     }
