@@ -5,6 +5,7 @@ This project uses the SFML CMake GitHub template. Please view the original templ
 ## Purpose
 
 The purpose of this repository is to store code and resources from my entry to the [GTMK Game Jam 2023](https://itch.io/jam/gmtk-2023).
+You can also view [the game page](https://dubomb.itch.io/snapshot) where an executable is available to download.
 This respository contains everything necessary to run the game by using CMake. No other installations should be necessary.
 
 ## How to run
